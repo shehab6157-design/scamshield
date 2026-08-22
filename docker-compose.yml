@@ -1,0 +1,50 @@
+version: "3.4"
+
+# Local Dendrite (Matrix homeserver) for development/testing.
+# This gives you a real encrypted-messaging backend running on your own machine.
+#
+# Usage:
+#   1. docker compose run --rm generate-config   (first time only, creates config)
+#   2. docker compose up
+#   3. Server is reachable at http://localhost:8008
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dendrite
+      POSTGRES_PASSWORD: dendrite
+      POSTGRES_DB: dendrite
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dendrite"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  generate-config:
+    image: matrixdotorg/dendrite-monolith:latest
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "/usr/bin/generate-config -server localhost > /etc/dendrite/dendrite.yaml"
+    volumes:
+      - ./dendrite-config:/etc/dendrite
+
+  dendrite:
+    image: matrixdotorg/dendrite-monolith:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8008:8008"
+    volumes:
+      - ./dendrite-config:/etc/dendrite
+      - dendrite-media:/var/dendrite/media
+    command: ["--config", "/etc/dendrite/dendrite.yaml"]
+
+volumes:
+  pgdata:
+  dendrite-media:
