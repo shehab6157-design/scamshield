@@ -1,0 +1,13 @@
+{
+  "name": "scamshield-client",
+  "version": "0.1.0",
+  "description": "Minimal Matrix client prototype with a scam-detection hook",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "matrix-js-sdk": "^34.0.0"
+  }
+}
