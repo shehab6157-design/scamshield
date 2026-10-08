@@ -74,7 +74,7 @@ Your account is suspended! Click here immediately: http://192.168.1.1/verify
 ```
 and watch it get flagged as high risk in the terminal.
 
-## Next steps (see the roadmap)
+## Next steps
 
 1. Replace `scanMessage()` internals in `scamDetector.js` with your real
    phishing-detection model/logic.
