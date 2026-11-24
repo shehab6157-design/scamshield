@@ -1,18 +1,18 @@
-# ScamShield — Messenger Prototype
+# ScamShield: Messenger Prototype
 
 A minimal, working starting point: a local encrypted-messaging homeserver
 (Dendrite, the Matrix protocol) plus a Node.js client that scans incoming
-messages for scam/phishing signals before showing them.
+messages for scam and phishing signals before showing them.
 
-This is intentionally bare-bones — the goal is to prove the full pipeline
-works (server → message → scan → display) before any UI work.
+This is intentionally bare-bones. The goal is to prove the full pipeline
+works, from server to message to scan to display, before any UI work.
 
 ## What's here
 
-- `docker-compose.yml` — spins up a local Dendrite homeserver + Postgres
-- `client/index.js` — connects, listens for messages, runs them through the scanner
-- `client/scamDetector.js` — the scam-detection logic (currently a rule-based
-  stub — this is where your real phishing-detection model plugs in later)
+- `docker-compose.yml`: spins up a local Dendrite homeserver and Postgres
+- `client/index.js`: connects, listens for messages, runs them through the scanner
+- `client/scamDetector.js`: the scam-detection logic (currently a rule-based
+  stub, and the place where a real phishing-detection model plugs in later)
 
 ## Step 1: Start the homeserver
 
@@ -30,7 +30,7 @@ curl http://localhost:8008/_matrix/client/versions
 ## Step 2: Create two test accounts
 
 Dendrite's registration is open by default in dev mode. Register two users
-(you'll need `curl` or a Matrix client) — easiest is via the admin API:
+(you'll need `curl` or a Matrix client). The easiest way is the admin API:
 
 ```bash
 docker compose exec dendrite /usr/bin/create-account \
@@ -76,20 +76,20 @@ and watch it get flagged as high risk in the terminal.
 
 ## Next steps
 
-1. Replace `scanMessage()` internals in `scamDetector.js` with your real
-   phishing-detection model/logic.
+1. Replace `scanMessage()` internals in `scamDetector.js` with a real
+   phishing-detection model or logic.
 2. Build a real UI (start with a web client using `matrix-js-sdk` in the
-   browser — reuse the same connection logic as `index.js`).
-3. Move the homeserver from `localhost` to a real VPS + domain so it's
+   browser, reusing the same connection logic as `index.js`).
+3. Move the homeserver from `localhost` to a real VPS and domain so it's
    reachable from outside your machine.
-4. Add invite links/QR codes so new users can join without manual account
+4. Add invite links or QR codes so new users can join without manual account
    creation.
 
 ## Notes
 
 - E2E encryption: this prototype uses unencrypted rooms for simplicity while
-  you're testing locally. Matrix's encryption (Olm/Megolm) is a config flag
-  away once the basic pipeline is solid — don't add that complexity until
-  send/receive/scan is working reliably.
-- Don't expose this Dendrite instance to the internet as-is — it's dev config
+  you're testing locally. Matrix's encryption (Olm and Megolm) is a config flag
+  away once the basic pipeline is solid. Don't add that complexity until
+  sending, receiving and scanning work reliably.
+- Don't expose this Dendrite instance to the internet as-is. It's dev config
   with default settings, not hardened for production.
